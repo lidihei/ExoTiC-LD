@@ -64,13 +64,17 @@ class StellarLimbDarkening(object):
     def __init__(self, M_H=None, Teff=None, logg=None, ld_model="mps1",
                  ld_data_path="", interpolate_type="nearest",
                  custom_wavelengths=None, custom_mus=None,
-                 custom_stellar_model=None, verbose=False):
+                 custom_stellar_model=None, verbose=False,
+                 M_H_grid=None, Teff_grid=None, logg_grid=None):
         self.verbose = verbose
 
         # Stellar input parameters.
         self.M_H_input = float(M_H) if M_H is not None else None
         self.Teff_input = int(Teff) if Teff is not None else None
         self.logg_input = float(logg) if logg is not None else None
+        self.M_H_grid = M_H_grid
+        self.Teff_grid = Teff_grid
+        self.logg_grid = logg_grid
         self.interpolate_type = interpolate_type
         if self.verbose:
             print("Input stellar parameters are M_H={}, Teff={}, logg={}."
@@ -407,7 +411,9 @@ class StellarLimbDarkening(object):
 
         sg = StellarGrids(self.M_H_input, self.Teff_input,
                           self.logg_input, self.ld_model, self.ld_data_path,
-                          self.interpolate_type, self.verbose)
+                          self.interpolate_type, self.verbose,
+                          self.M_H_grid, self.Teff_grid, self.logg_grid
+                          )
         self.stellar_wavelengths, self.mus, self.stellar_intensities = \
             sg.get_stellar_data()
 

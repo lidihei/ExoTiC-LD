@@ -10,10 +10,13 @@ class StellarGrids(object):
     various grids supported. Load nearest match or
     interpolate stellar models within a cuboid.
 
+    if ld_model is not any of  kurucz, stagger, mps1 or mps2,
+    the M_H_grid, Teff_grid, and logg_grid should be given.
     """
 
     def __init__(self, M_H, Teff, logg, ld_model, ld_data_path,
-                 interpolate_type, verbose):
+                 interpolate_type, verbose,
+                 M_H_grid=None, Teff_grid=None, logg_grid=None):
         self.verbose = verbose
 
         self.M_H_input = M_H
@@ -23,9 +26,9 @@ class StellarGrids(object):
         self.ld_data_path = ld_data_path
         self.interpolate_type = interpolate_type
 
-        self._M_H_grid = None
-        self._Teff_grid = None
-        self._logg_grid = None
+        self._M_H_grid = M_H_grid
+        self._Teff_grid = Teff_grid
+        self._logg_grid = logg_grid
         self._irregular_grid = None
 
     def get_stellar_data(self):
@@ -85,9 +88,10 @@ class StellarGrids(object):
                  6500: {4.0: [-3.0, -2.0, -1.0, 0.0],
                         4.5: [-3.0, -2.0, -1.0, 0.0]},
                  7000: {4.5: [-3.0, 0.0]}}
-
+        
         else:
-            raise ValueError("ld_model not recognised.")
+            if (self._M_H_grid is None) or (self._Teff_grid is None) or (self._logg_grid is None):
+               raise ValueError("ld_model not recognised. The M_H_grid, Teff_grid and logg_grid should be given, e.g. M_H_grid = np.array([-0.1, 0, 0.1])")
 
         # Get stellar data.
         if not self.ld_model == "stagger":
